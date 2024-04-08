@@ -38,28 +38,28 @@ router.post('/', async(req,res) => {
 
 router.put('/:id', async(req,res) => {
     const{ error } = validateBook(req.body)
-        if(error) return res.status(400).send(error.details[0].message)
-    
-        const category = await Category.findById(req.body.categoryId)
-        if(!category) return res.status(400).send({"message":"Invalid BookID!!!"})
-    
-        const book = await Book.findByIdAndUpdate(
-            req.params.id,
-            {
-                title: req.body.title,
-                author: req.body.author,
-                publishYear: req.body.title,
-                category:{
-                    _id:category.id,
-                    name: category.name
-                },
-                numberInStock: req.body.numberInStock,
-                dailyRentalRate: req.body.dailyRentalRate
+    if(error) return res.status(400).send(error.details[0].message)
+
+    const category = await Category.findById(req.body.categoryId)
+    if(!category) return res.status(400).send({"message":"Invalid Category ID!!!"})
+
+    const book = await Book.findByIdAndUpdate(
+        req.params.id,
+        {
+            title: req.body.title,
+            author: req.body.author,
+            publishYear: req.body.publishYear,
+            category:{
+                _id:category.id,
+                name: category.name
             },
-            { new: true }        
-        )
-        if(!book) return res.status(404).send({"message":"Book ID doesn't exist"})
-        res.send(book)
+            numberInStock: req.body.numberInStock,
+            dailyRentalRate: req.body.dailyRentalRate
+        },
+        { new: true }        
+    )
+    if(!book) return res.status(404).send({"message":"Book ID doesn't exist"})
+    res.send(book)
 })
 
 router.delete('/:id', async(req,res) => {
